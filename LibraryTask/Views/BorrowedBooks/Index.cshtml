@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<div class="form-group w-50 mx-auto text-center">
+    <label class="control-label mx-auto"> Choose the customer</label>
+    <select id="boid" asp-items="ViewBag.AllBorrowers" class="form-control">
+        <option>---Choose the customer---</option>
+    </select>
+</div>
+
+<div id="d1">
+
+</div>
+
+<div id="d2">
+
+</div>
+
+@section Scripts{
+    <script>
+        function getid() {
+            let id = $("#boid").val();
+            $("#d1").load("/BorrowedBooks/bookbyborrower/" + id);
+            $("#d2").load("/BorrowedBooks/Availablebooks/" + id)
+        };
+        $("#boid").on("change", function () {
+
+            getid();
+        })
+        function save(id) {
+            $.ajax({
+                    url: '/BorrowedBooks/returnBook/' + id,
+                success: function () {
+                    getid();
+                    toastr.success('The book has been successfully returned to the library');
+                    
+                },
+
+                error: function () {
+                    toastr.error('Something went wrong!');
+                }
+                })
+        }
+        function Borrow(id) {
+            let Id = $("#boid").val();
+            $.ajax({
+                url: '/BorrowedBooks/borrowBook',
+                data: { bookId: id, borrowerid : Id},
+                success: function () {
+                    getid();
+                    toastr.success('The book has been successfully borrowed');
+                },
+                error: function () {
+                    toastr.error('Something went wrong!');
+                }
+            })
+        }
+    </script>
+}
